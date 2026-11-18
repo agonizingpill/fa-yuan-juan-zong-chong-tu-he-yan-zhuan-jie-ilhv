@@ -58,6 +58,22 @@ class Triage(Base):
     review_note:Mapped[str]=mapped_column(String(200),default='')
     metrics:Mapped[dict]=mapped_column(JSON,default=dict)
     error:Mapped[str]=mapped_column(String(200),default='')
+    second:Mapped[str|None]=mapped_column(String(20),nullable=True)
+    margin:Mapped[float|None]=mapped_column(Float,nullable=True)
+    queue_position:Mapped[int|None]=mapped_column(Integer,nullable=True)
+    queue_reason:Mapped[str]=mapped_column(String(200),default='')
+class TriageClaim(Base):
+    __tablename__='triage_claims'
+    id:Mapped[int]=mapped_column(primary_key=True)
+    triage_id:Mapped[int]=mapped_column(ForeignKey('triages.id'))
+    intake_id:Mapped[int]=mapped_column(ForeignKey('intakes.id'))
+    claimed_by:Mapped[str]=mapped_column(String(40))
+    status:Mapped[str]=mapped_column(String(20),default='open')
+    position:Mapped[int]=mapped_column(Integer)
+    open_key:Mapped[int|None]=mapped_column(Integer,unique=True,nullable=True)
+    claimed_at:Mapped[datetime]=mapped_column(DateTime(timezone=True),default=now)
+    expires_at:Mapped[datetime]=mapped_column(DateTime(timezone=True))
+    confirmed_at:Mapped[datetime|None]=mapped_column(DateTime(timezone=True),nullable=True)
 class Requirement(Base):
     __tablename__='requirements'
     __table_args__=(UniqueConstraint('topic','code'),)

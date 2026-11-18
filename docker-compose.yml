@@ -6,6 +6,8 @@ x-app: &app
     REDIS_URL: redis://redis:6379/0
     JWT_SECRET: ${JWT_SECRET:-local-aid-demo-change-me}
     SEED_DEMO: ${SEED_DEMO:-true}
+    TRIAGE_MARGIN_THRESHOLD: ${TRIAGE_MARGIN_THRESHOLD:-0.5}
+    TRIAGE_CLAIM_TTL_SECONDS: ${TRIAGE_CLAIM_TTL_SECONDS:-600}
     OPENBLAS_NUM_THREADS: 1
   volumes: [artifacts:/artifacts]
   depends_on:

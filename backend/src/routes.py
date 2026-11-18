@@ -15,7 +15,7 @@ def login(data:Login,db=Depends(session)):
     return {'token':issue(row),'username':row.username,'role':row.role}
 @router.get('/workspace')
 def workspace(db=Depends(session),user=Depends(current)):
-    return {m.__tablename__:[dump(v) for v in db.scalars(select(m).order_by(m.id))] for m in [Intake,Consent,Party,CaseParty,ConflictCheck,Triage,Requirement,Document,Agency,Referral,ServiceLog,Closure]}
+    return {m.__tablename__:[dump(v) for v in db.scalars(select(m).order_by(m.id))] for m in [Intake,Consent,Party,CaseParty,ConflictCheck,Triage,TriageClaim,Requirement,Document,Agency,Referral,ServiceLog,Closure]}
 @router.post('/intakes')
 def create(data:IntakeInput,db=Depends(session),user=Depends(editor)):return intake.create(db,data,user)
 @router.patch('/intakes/{id}/facts')
@@ -30,6 +30,10 @@ def check(data:CheckInput,db=Depends(session),user=Depends(editor)):return confl
 def enqueue(data:TriageInput,db=Depends(session),user=Depends(editor)):return triage.enqueue(db,data,user)
 @router.post('/triages/{id}/review')
 def review(id:int,data:ReviewInput,db=Depends(session),user=Depends(supervisor)):return triage.review(db,id,data,user)
+@router.post('/triage-claims')
+def claim_ticket(db=Depends(session),user=Depends(supervisor)):return triage.claim(db,user)
+@router.post('/triage-claims/{id}/confirm')
+def confirm_ticket(id:int,data:ReviewInput,db=Depends(session),user=Depends(supervisor)):return triage.confirm(db,id,data,user)
 @router.post('/documents')
 def submit(data:DocumentInput,db=Depends(session),user=Depends(editor)):return document.submit(db,data,user)
 @router.post('/documents/{id}/verify')
